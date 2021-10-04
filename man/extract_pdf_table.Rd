@@ -4,10 +4,20 @@
 \alias{extract_pdf_table}
 \title{Read data table from a pdf}
 \usage{
-extract_pdf_table(file_path)
+extract_pdf_table(file_path, word_start, word_end, names_from, values_from)
 }
 \arguments{
 \item{file_path}{path to pdf}
+
+\item{word_start}{word that marks the start of the table (first word in the table of interest)}
+
+\item{word_end}{word that marks the end of the table (first word after the table ends)}
+
+\item{names_from}{table columns that are used to construct names for values
+(eg. "CD4+", "Bead events", etc...)}
+
+\item{values_from}{table columns that contain actual values (eg. "Percent", "Value/AbsCnt").
+Currently all values are assumed to be numeric.}
 }
 \value{
 a tibble with extracted data values, and columns 'patient', 'sample' and 'file'
@@ -20,7 +30,12 @@ Read data table from a pdf
 folder <- system.file("testdata", "pdfs", package = "pdfdata")
 files <- list.files(folder, pattern = "\\\\.pdf", full.names = TRUE)
 
-pdf_tables <- purrr::map(files, extract_pdf_table) \%>\%
+pdf_tables <- purrr::map(files,
+extract_pdf_table,
+word_start = "Parameter",
+word_end = "QC Messages",
+names_from = "Parameter",
+values_from = c("Percent", "Value/AbsCnt")) \%>\%
   # Combine the rows from each file
   dplyr::bind_rows()
 
