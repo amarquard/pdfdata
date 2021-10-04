@@ -4,10 +4,14 @@
 \alias{extract_pdf_table}
 \title{Read data table from a pdf}
 \usage{
-extract_pdf_table(file_path)
+extract_pdf_table(file_path, patient_pattern, patient_sep = "_")
 }
 \arguments{
 \item{file_path}{path to pdf}
+
+\item{patient_pattern}{pattern to use to extract patient name from file name}
+
+\item{patient_sep}{separator between patient name and sample name in the file name}
 }
 \value{
 a tibble with extracted data values, and columns 'patient', 'sample' and 'file'
