@@ -1,12 +1,12 @@
 Package: pdfdata
-Title: What the Package Does (One Line, Title Case)
+Title: Read A Table Of Data From A PDF
 Version: 0.0.0.9000
 Authors@R: 
     person(given = "Andrea",
            family = "Marquard",
            role = c("aut", "cre"),
            email = "a.m.marquard@gmail.com")
-Description: What the package does (one paragraph).
+Description: Reads a table of data from a pdf. Currently designed for BD FACSCanto II results, but intended to be a general purpose tool in the future.
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
@@ -19,3 +19,6 @@ Imports:
     purrr,
     stringr,
     tidyr
+Suggests: 
+    testthat (>= 3.0.0)
+Config/testthat/edition: 3
