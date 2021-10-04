@@ -6,7 +6,6 @@
 #' @export
 #'
 #' @examples
-#' \dontrun{
 #' # Get a list of all PDF files in a folder (in this case our testdata folder)
 #' folder <- system.file("testdata", "pdfs", package = "pdfdata")
 #' files <- list.files(folder, pattern = "\\.pdf", full.names = TRUE)
@@ -16,7 +15,6 @@
 #'   dplyr::bind_rows()
 #'
 #' pdf_tables
-#' }
 extract_pdf_table <- function(file_path) {
 
   file_name <- basename(file_path)
@@ -29,18 +27,18 @@ extract_pdf_table <- function(file_path) {
 
   # Extract table values from the raw lines
   get_table_from_lines(raw_lines) %>%
+
     # Reshape to have one value per column
     tidyr::pivot_wider(names_from = Parameter, values_from = c(Percent, `Value/AbsCnt`)) %>%
+
     # Add info about sample and filename
     dplyr::bind_cols(sample = sample_name, file = file_name) %>%
+
     # Reorder columns
     dplyr::select(file, sample, dplyr::everything())
 }
 
 utils::globalVariables(c("Parameter", "Percent", "Value/AbsCnt"))
-
-# # Save as excel, name the file by today's date
-# openxlsx::write.xlsx(pdf_tables, file = paste0("excel/facs_tables_", Sys.Date(), ".xlsx"))
 
 
 

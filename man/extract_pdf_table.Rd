@@ -16,14 +16,13 @@ a tibble with extracted data values, and columns 'patient', 'sample' and 'file'
 Read data table from a pdf
 }
 \examples{
-\dontrun{
-# Get a list of all files in a folder ()
-files <- system.file("testdata", "pdfs", package = "pdfdata")
+# Get a list of all PDF files in a folder (in this case our testdata folder)
+folder <- system.file("testdata", "pdfs", package = "pdfdata")
+files <- list.files(folder, pattern = "\\\\.pdf", full.names = TRUE)
 
 pdf_tables <- purrr::map(files, extract_pdf_table) \%>\%
   # Combine the rows from each file
   dplyr::bind_rows()
 
 pdf_tables
-}
 }
