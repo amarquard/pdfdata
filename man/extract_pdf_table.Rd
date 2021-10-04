@@ -4,14 +4,10 @@
 \alias{extract_pdf_table}
 \title{Read data table from a pdf}
 \usage{
-extract_pdf_table(file_path, patient_pattern, patient_sep = "_")
+extract_pdf_table(file_path)
 }
 \arguments{
 \item{file_path}{path to pdf}
-
-\item{patient_pattern}{pattern to use to extract patient name from file name}
-
-\item{patient_sep}{separator between patient name and sample name in the file name}
 }
 \value{
 a tibble with extracted data values, and columns 'patient', 'sample' and 'file'
@@ -21,14 +17,12 @@ Read data table from a pdf
 }
 \examples{
 \dontrun{
-# Get a list of all files in the 'pdfs' folder
-files <- list.files("pdfs", pattern = "\\\\.pdf$", full.names = TRUE)
+# Get a list of all files in a folder ()
+files <- system.file("testdata", "pdfs", package = "pdfdata")
 
 pdf_tables <- purrr::map(files, extract_pdf_table) \%>\%
   # Combine the rows from each file
-  dplyr::bind_rows() \%>\%
-  # Get patient, sample and filename as the first columns
-  dplyr::select(patient, sample, file, dplyr::everything())
+  dplyr::bind_rows()
 
 pdf_tables
 }

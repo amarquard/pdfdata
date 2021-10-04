@@ -2,7 +2,7 @@ data_file <- system.file("testdata", "pdfs", "TEST.01_bsl.pdf", package = "pdfda
 
 test_that("Table is extracted correctly from pdf", {
 
-  data_tab <- facs_to_table(data_file)
+  data_tab <- get_lines_from_pdf(data_file) %>% get_table_from_lines()
 
   expect_equal(dim(data_tab), c(10, 3))
 
@@ -19,9 +19,8 @@ test_that("Table is extracted correctly from pdf", {
 })
 
 test_that("Table is converted into one row", {
-  data_row <- extract_pdf_table(data_file, patient_pattern = "TEST\\.\\d+")
-  expect_equal(dim(data_row), c(1, 23))
-  expect_equal(data_row$patient[1], "TEST.01")
-  expect_equal(data_row$sample[1], "bsl")
+  data_row <- extract_pdf_table(data_file)
+  expect_equal(dim(data_row), c(1, 22))
+  expect_equal(data_row$sample[1], "LU2006.01_bsl")
   expect_equal(data_row$file[1], "TEST.01_bsl.pdf")
 })
