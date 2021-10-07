@@ -34,7 +34,7 @@ extract_pdf_table <- function(file_path, word_start, word_end, names_from, value
   raw_lines <- get_lines_from_pdf(file_path)
 
   # Sample is the first line of the pdf
-  sample_name <- raw_lines[[1]][1]
+  sample_name <- raw_lines[1]
 
   # Extract table values from the raw lines
   raw_table <- get_table_from_lines(raw_lines, word_start = word_start, word_end = word_end)
@@ -68,27 +68,22 @@ extract_pdf_table <- function(file_path, word_start, word_end, names_from, value
 get_table_from_lines <- function(pdf_lines, word_start, word_end) {
 
   # Decide where to start and end
-  start_pos <- grep(word_start, pdf_lines[[1]])
-  end_pos <- grep(word_end, pdf_lines[[1]])
+  start_pos <- grep(word_start, pdf_lines)
+  end_pos <- grep(word_end, pdf_lines)
+  inds <- start_pos:(end_pos - 1)
 
-  relevant_fields <- pdf_lines[[1]][start_pos:(end_pos - 1)] %>%
-    purrr::discard(~ .x == "") %>%
-    stringr::str_split(" {2,}")
-  # TODO: shouls be fixed width splitting instead
+  table_lines <- pdf_lines[inds] %>%
+    # Remove empty lines
+    purrr::discard(~ .x == "")
 
-  relevant_3_fields <- purrr::map(relevant_fields, ~{
-    if (length(.x)==2) {
-      c(.x[1], "", .x[2]) # add the empty missing field
-    } else {
-      .x
-    }
-  })
+  # Split first row on whitespace, to get colnames
+  col_names <- stringr::str_split(table_lines[1], " {2,}")[[1]]
 
-  headers <- relevant_3_fields[[1]]
+  # Get column positions from fixed-width data
+  col_positions <- readr::fwf_empty(table_lines[-1], col_names = col_names)
 
-  purrr::map(relevant_3_fields[-1], ~purrr::set_names(x = .x, nm = headers)) %>%
-    dplyr::bind_rows()
-
+  # Create table from fixed-width data
+  readr::read_fwf(table_lines[-1], col_positions)
 }
 
 get_lines_from_pdf <- function(file) {
@@ -96,5 +91,7 @@ get_lines_from_pdf <- function(file) {
   raw_text <- pdftools::pdf_text(file)
 
   # Split it by newlines
-  raw_text %>% stringr::str_split("\n")
+  raw_lines <- raw_text %>% stringr::str_split("\n")
+
+  raw_lines[[1]]
 }
