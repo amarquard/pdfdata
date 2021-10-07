@@ -17,6 +17,7 @@ Imports:
     magrittr,
     pdftools,
     purrr,
+    readr,
     stringr,
     tidyr,
     usethis
